@@ -4,6 +4,7 @@ import sys
 
 
 def main():
+    #константы, всё , что может потом пригодиться
     N, M = 700, 700
     WIDTH = N
     HEIGHT = M
@@ -23,6 +24,7 @@ def main():
     
     
     '''
+    #загрузка изображений
     def load_image(name):
         fullname = os.path.join('data', name)
         # если файл не существует, то выходим
@@ -32,6 +34,8 @@ def main():
         image = pygame.image.load(fullname)
         return image
 
+
+    IMAGE_PLAYER =  load_image("daxbotsheet.png")
     '''
     
     
@@ -42,16 +46,17 @@ def main():
         def __init__(self, width, height):
             self.width = width
             self.height = height
+            # SELF.BOARD  - это список координат, связанных с доской (в список можно добавлять удобные параметры)
             self.board = [[0] * width for _ in range(height)]
             self.left = 1
             self.top = 1
             self.cell_size = 20
-
+        # SET_VIEW даёт возможность изменять вид доски
         def set_view(self, left, top, cell_size):
             self.left = left
             self.top = top
             self.cell_size = cell_size
-
+        # добавление в список SELF.BOARD параметров (координат);    прорисовка
         def render(self, screen):
             for y in range(self.height):
                 for x in range(self.width):
@@ -70,9 +75,13 @@ def main():
 
 
         '''
+    #класс основного игрока
     class Player:
         def __init__(self, x, y):
-            self.
+            self.image = IMAGE_PLAYER
+            self.rect = self.image.get_rect()
+            self.rect_x = x
+            self.rect_y = y
 
 
 
