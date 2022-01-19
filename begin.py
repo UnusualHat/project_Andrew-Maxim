@@ -12,6 +12,7 @@ def main():
     HEIGHT = M
     FPS = 60
 
+
     ACC = 0.5 #ускорение
     FRIC = -0.12 #трение
 
@@ -77,6 +78,16 @@ def main():
 
 
 
+    SPIKE_IMAGE = pygame.transform.scale(load_image(str(os.getcwd()) + '\data\spikes' + '\\' +
+              random.choice(os.listdir(str(os.getcwd()) + '\data\spikes'))), (60, 60))
+
+    class Spike(pygame.sprite.Sprite):
+        def __init__(self, group, center):
+            super().__init__(group)
+            self.image = SPIKE_IMAGE
+            self.rect = self.image.get_rect()
+            self.rect.centerx = center[0]
+            self.rect.centery = center[1]
 
 
     class Board:
@@ -134,7 +145,29 @@ def main():
             self.fric = FRIC
 
         #физику надо добавить
+        def GAME_OVER(self):
+            print('game over')
+            pygame.quit()
+
+
         def update(self):
+            global running
+            #game over
+            for i in all_sprites:
+                if isinstance(i, Spike):
+                    if (self.rect.collidepoint(i.rect.topleft[0], i.rect.topleft[1])) or (
+                        self.rect.collidepoint(i.rect.topright[0], i.rect.topright[1])) or (
+                        self.rect.collidepoint(i.rect.bottomleft[0], i.rect.bottomleft[1])) or (
+                            self.rect.collidepoint(i.rect.bottomright[0], i.rect.bottomright[1])):
+                        self.GAME_OVER()
+
+
+
+
+
+
+
+
             jumps = False
             keystate = pygame.key.get_pressed()
 
@@ -212,6 +245,12 @@ def main():
                 Texture(all_sprites, ((board.board[y][x][1][0] + board.board[y][x][2][0]) / 2,
                                       (board.board[y][x][1][1] + board.board[y][x][2][1]) / 2))
 
+
+    for y in range(board.height):
+        for x in range(board.width):
+            if board.board[y][x][0] == 'h':
+                Spike(all_sprites, ((board.board[y][x][1][0] + board.board[y][x][2][0]) / 2,
+                                      (board.board[y][x][1][1] + board.board[y][x][2][1]) / 2))
     '''
 
 
@@ -228,7 +267,6 @@ def main():
     #
 
     running = True
-
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
