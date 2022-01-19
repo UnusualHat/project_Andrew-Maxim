@@ -10,6 +10,10 @@ def main():
     HEIGHT = M
     FPS = 60
 
+    ACC = 0.5 #ускорение
+    FRIC = -0.12 #трение
+
+
     # Задаем цвета
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
@@ -20,6 +24,7 @@ def main():
 
     pygame.init()
 
+    CLOCK = pygame.time.Clock()
     '''
     
 
@@ -75,33 +80,57 @@ def main():
 
         '''
 
-    IMAGE_PLAYER = load_image("daxbotsheet.png")
+    IMAGE_PLAYER = pygame.transform.scale(load_image("daxbotsheet.png"), (50, 50))
 
     #класс основного игрока
     class Player(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
             self.image = IMAGE_PLAYER
+
             self.rect = self.image.get_rect()
             self.rect.centerx = WIDTH / 2
             self.rect.centery = WIDTH / 2
 
+            self.vel = 1 #скорость
+            self.acc = ACC * 10
+            self.fric = FRIC
 
         #физику надо добавить
         def update(self):
+            jumps = False
             keystate = pygame.key.get_pressed()
             if keystate[pygame.K_LEFT]:
-                self.rect.x -= 1
+                self.rect.x -= 5
             if keystate[pygame.K_RIGHT]:
-                self.rect.x += 1
+                self.rect.x += 5
             if keystate[pygame.K_UP]:
-                self.rect.y -= 1
-            if keystate[pygame.K_DOWN]:
-                self.rect.y += 1
+                jumps = True
+                self.rect.y -= 14
+            if self.rect.bottom < HEIGHT:
+                if not jumps:
+                    self.rect.y += self.acc / 3
+                    self.acc += 0.13
+                else:
+                    self.rect.y += self.acc
+                    self.acc += 0.13
+            else:
+                self.acc = ACC * 10
 
 
 
+    #класс для тестирования физики игрока
+    class platform(pygame.sprite.Sprite):
+        def __init__(self):
+            super().__init__()
+            self.surf = pygame.Surface((WIDTH, 20))
+            self.surf.fill((255, 0, 0))
+            self.rect = self.surf.get_rect(center=(WIDTH / 2, HEIGHT - 10))
 
+        def draw(self, screen):
+            pygame.draw.rect(screen, pygame.Color(WHITE), (0, HEIGHT - 10, WIDTH, HEIGHT))
+
+    plat = platform()
 
     all_sprites = pygame.sprite.Group()
     player = Player()
@@ -132,14 +161,15 @@ def main():
 
 
         # Рендеринг
-        screen.fill(BLACK)
 
-        #board.render(screen)
         all_sprites.update()
         screen.fill(BLACK)
         all_sprites.draw(screen)
+        plat.draw(screen)
+        #board.render(screen)
         # После отрисовки всего, переворачиваем экран
         pygame.display.flip()
+        CLOCK.tick(FPS)
 
     pygame.quit()
 
