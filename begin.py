@@ -24,7 +24,8 @@ def main():
     BLUE = (0, 0, 255)
     YELLOW = (255, 255, 0)
 
-    with open(str(os.getcwd()) + '\data\levels' + '\\' + random.choice(os.listdir(str(os.getcwd()) + '\data\levels')), 'r', encoding='UTF-8') as file_level:
+    with open(str(os.getcwd()) + '\data\levels' + '\\' +
+              random.choice(os.listdir(str(os.getcwd()) + '\data\levels')), 'r', encoding='UTF-8') as file_level:
         data_level = file_level.readlines()
         level_full = []
         for i in data_level:
@@ -171,7 +172,7 @@ def main():
     #
     screen = pygame.display.set_mode(size)
     board = Board(len(LEVEL_TEXTURES), len(LEVEL_TEXTURES[0]))
-    board.set_view(25, 25, 60)
+    board.set_view(5, 5, 60)
     #
     #
 
