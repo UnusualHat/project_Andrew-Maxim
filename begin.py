@@ -22,7 +22,7 @@ def main():
 
     '''
     
-    
+
     '''
     #загрузка изображений
     def load_image(name):
@@ -35,7 +35,6 @@ def main():
         return image
 
 
-    IMAGE_PLAYER =  load_image("daxbotsheet.png")
     '''
     
     
@@ -75,21 +74,44 @@ def main():
 
 
         '''
+
+    IMAGE_PLAYER = load_image("daxbotsheet.png")
+
     #класс основного игрока
-    class Player:
-        def __init__(self, x, y):
+    class Player(pygame.sprite.Sprite):
+        def __init__(self):
+            pygame.sprite.Sprite.__init__(self)
             self.image = IMAGE_PLAYER
             self.rect = self.image.get_rect()
-            self.rect_x = x
-            self.rect_y = y
+            self.rect.centerx = WIDTH / 2
+            self.rect.centery = WIDTH / 2
+
+
+        #физику надо добавить
+        def update(self):
+            keystate = pygame.key.get_pressed()
+            if keystate[pygame.K_LEFT]:
+                self.rect.x -= 1
+            if keystate[pygame.K_RIGHT]:
+                self.rect.x += 1
+            if keystate[pygame.K_UP]:
+                self.rect.y -= 1
+            if keystate[pygame.K_DOWN]:
+                self.rect.y += 1
 
 
 
+
+
+    all_sprites = pygame.sprite.Group()
+    player = Player()
+    all_sprites.add(player)
     '''
 
 
 
     '''
+
     size = WIDTH, HEIGHT
     screen = pygame.display.set_mode(size)
 
@@ -108,12 +130,20 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        screen.fill((0, 0, 0))
-        board.render(screen)
+
+        # Рендеринг
+        screen.fill(BLACK)
+
+        #board.render(screen)
+        all_sprites.update()
+        screen.fill(BLACK)
+        all_sprites.draw(screen)
+        # После отрисовки всего, переворачиваем экран
         pygame.display.flip()
 
-
     pygame.quit()
+
+
 
 
 if __name__ == '__main__':
