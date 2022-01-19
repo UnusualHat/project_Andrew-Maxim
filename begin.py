@@ -1,6 +1,8 @@
 import pygame
 import os
 import sys
+import random
+
 
 
 def main():
@@ -21,6 +23,23 @@ def main():
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
     YELLOW = (255, 255, 0)
+
+    with open(str(os.getcwd()) + '\data\levels' + '\\' + random.choice(os.listdir(str(os.getcwd()) + '\data\levels')), 'r', encoding='UTF-8') as file_level:
+        data_level = file_level.readlines()
+        level_full = []
+        for i in data_level:
+            textures = []
+            for j in i.replace('\n', ''):
+                textures.append(j)
+            level_full.append(textures)
+
+
+
+    LEVEL_TEXTURES = level_full
+
+
+
+
 
     pygame.init()
 
@@ -50,8 +69,13 @@ def main():
         def __init__(self, width, height):
             self.width = width
             self.height = height
+            self.board = []
             # SELF.BOARD  - это список координат, связанных с доской (в список можно добавлять удобные параметры)
-            self.board = [[0] * width for _ in range(height)]
+            for i in range(len(LEVEL_TEXTURES)):
+                zapolnenie = []
+                for j in LEVEL_TEXTURES[i]:
+                    zapolnenie.append(j)
+                self.board.append(zapolnenie)
             self.left = 1
             self.top = 1
             self.cell_size = 20
@@ -64,13 +88,12 @@ def main():
         def render(self, screen):
             for y in range(self.height):
                 for x in range(self.width):
-                    self.board[y][x] = [[x * self.cell_size + self.left, y * self.cell_size + self.top],
+                    self.board[y][x] = [self.board[y][x],
+                                        [x * self.cell_size + self.left, y * self.cell_size + self.top],
                                         [x * self.cell_size + self.left + self.cell_size,
                                          y * self.cell_size + self.top + self.cell_size], 1
                                         ]
-                    pygame.draw.rect(screen, pygame.Color(WHITE), (
-                        x * self.cell_size + self.left, y * self.cell_size + self.top, self.cell_size,
-                        self.cell_size), 1)
+
 
 
 
@@ -109,7 +132,7 @@ def main():
                 self.rect.y -= 14
             if self.rect.bottom < HEIGHT:
                 if not jumps:
-                    self.rect.y += self.acc / 3
+                    self.rect.y += self.acc - 9
                     self.acc += 0.13
                 else:
                     self.rect.y += self.acc
@@ -147,7 +170,7 @@ def main():
     #
     #
     screen = pygame.display.set_mode(size)
-    board = Board(10, 10)
+    board = Board(len(LEVEL_TEXTURES), len(LEVEL_TEXTURES[0]))
     board.set_view(25, 25, 60)
     #
     #
