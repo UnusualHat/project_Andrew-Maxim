@@ -24,6 +24,7 @@ def main():
     BLUE = (0, 0, 255)
     YELLOW = (255, 255, 0)
 
+
     with open(str(os.getcwd()) + '\data\levels' + '\\' +
               random.choice(os.listdir(str(os.getcwd()) + '\data\levels')), 'r', encoding='UTF-8') as file_level:
         data_level = file_level.readlines()
@@ -64,6 +65,18 @@ def main():
     
     
     '''
+    TEXTURE_IMAGE = pygame.transform.scale(load_image('metal.png'), (60, 60))
+
+    class Texture(pygame.sprite.Sprite):
+        def __init__(self, group, center):
+            super().__init__(group)
+            self.image = TEXTURE_IMAGE
+            self.rect = self.image.get_rect()
+            self.rect.centerx = center[0]
+            self.rect.centery = center[1]
+
+
+
 
 
     class Board:
@@ -86,13 +99,13 @@ def main():
             self.top = top
             self.cell_size = cell_size
         # добавление в список SELF.BOARD параметров (координат);    прорисовка
-        def render(self, screen):
+        def render(self):
             for y in range(self.height):
                 for x in range(self.width):
                     self.board[y][x] = [self.board[y][x],
                                         [x * self.cell_size + self.left, y * self.cell_size + self.top],
                                         [x * self.cell_size + self.left + self.cell_size,
-                                         y * self.cell_size + self.top + self.cell_size], 1
+                                         y * self.cell_size + self.top + self.cell_size]
                                         ]
 
 
@@ -124,14 +137,43 @@ def main():
         def update(self):
             jumps = False
             keystate = pygame.key.get_pressed()
+
+
             if keystate[pygame.K_LEFT]:
-                self.rect.x -= 5
+                STOP_L = 0
+                for i in all_sprites:
+                    if isinstance(i, Texture):
+                        if i.rect.right > self.rect.left - 5 and i.rect.left < self.rect.right - 5\
+                                and i.rect.top < self.rect.bottom and i.rect.bottom > self.rect.top:
+                            STOP_L = i.rect.right
+                if self.rect.x - 3 > STOP_L:
+                    self.rect.x -= 5
+
+
+
             if keystate[pygame.K_RIGHT]:
-                self.rect.x += 5
+                STOP_R = 0
+                for i in all_sprites:
+                    if isinstance(i, Texture):
+                        if i.rect.left < self.rect.right + 5 and i.rect.right > self.rect.right + 5 \
+                                and i.rect.top < self.rect.bottom and i.rect.bottom > self.rect.top:
+                            STOP_R = i.rect.right
+                if self.rect.x - 3 > STOP_R:
+                    self.rect.x += 5
+
+
+
             if keystate[pygame.K_UP]:
                 jumps = True
                 self.rect.y -= 14
-            if self.rect.bottom < HEIGHT:
+
+            STOP = HEIGHT
+            for i in all_sprites:
+                if isinstance(i, Texture):
+                    if i.rect.right > self.rect.left and i.rect.left < self.rect.right\
+                            and self.rect.bottom + 5 > i.rect.top and self.rect.bottom + 5 < i.rect.bottom:
+                        STOP = i.rect.top
+            if self.rect.bottom < HEIGHT and self.rect.bottom < STOP - 4:
                 if not jumps:
                     self.rect.y += self.acc - 9
                     self.acc += 0.13
@@ -159,6 +201,17 @@ def main():
     all_sprites = pygame.sprite.Group()
     player = Player()
     all_sprites.add(player)
+
+    board = Board(len(LEVEL_TEXTURES[0]), len(LEVEL_TEXTURES))
+    board.set_view(5, 5, 60)
+    board.render()
+
+    for y in range(board.height):
+        for x in range(board.width):
+            if board.board[y][x][0] == 't':
+                Texture(all_sprites, ((board.board[y][x][1][0] + board.board[y][x][2][0]) / 2,
+                                      (board.board[y][x][1][1] + board.board[y][x][2][1]) / 2))
+
     '''
 
 
@@ -166,13 +219,11 @@ def main():
     '''
 
     size = WIDTH, HEIGHT
-    screen = pygame.display.set_mode(size)
 
     #
     #
     screen = pygame.display.set_mode(size)
-    board = Board(len(LEVEL_TEXTURES), len(LEVEL_TEXTURES[0]))
-    board.set_view(5, 5, 60)
+
     #
     #
 
@@ -185,12 +236,11 @@ def main():
 
 
         # Рендеринг
-
         all_sprites.update()
         screen.fill(BLACK)
         all_sprites.draw(screen)
         plat.draw(screen)
-        #board.render(screen)
+        board.render()
         # После отрисовки всего, переворачиваем экран
         pygame.display.flip()
         CLOCK.tick(FPS)
