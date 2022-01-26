@@ -23,13 +23,46 @@ class LEVEL:
                 if column == 'p':
                     x = column_index * TILE_SIZE
                     y = row_index * TILE_SIZE
-                    player_sprite = Player((x, y), TILE_SIZE)
-                    self.player.add(player_sprite)
+                    self.player_sprite = Player((x, y), TILE_SIZE)
+                    self.player.add(self.player_sprite)
+
+    def cheking_horizontal_collisions(self):
+        player = self.player.sprite
+        player.rect.x += player.direction.x * player.speed_x
+
+        for tile in self.tiles.sprites():
+            if tile.rect.colliderect(player.rect):
+                if player.direction.x > 0:
+                    player.rect.right = tile.rect.left
+                elif player.direction.x < 0:
+                    player.rect.left = tile.rect.right
+
+    def cheking_vertical_collisions(self):
+        player = self.player.sprite
+        player.apply_gravity()
+
+        for tile in self.tiles.sprites():
+            if tile.rect.colliderect(player.rect):
+                if player.direction.y < 0:
+                    player.rect.top = tile.rect.bottom
+                    player.direction.y = 0
+
+                elif player.direction.y > 0:
+                    player.rect.bottom = tile.rect.top
+                    player.direction.y = 0
+
+                    keys = pygame.key.get_pressed()
+                    if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
+                        player.direction.y = -20 #jump_height
+
+
+
 
     def run(self):
         self.tiles.draw(self.display_surface)
 
         self.player.update()
         self.player.draw(self.display_surface)
-
+        self.cheking_horizontal_collisions()
+        self.cheking_vertical_collisions()
 
