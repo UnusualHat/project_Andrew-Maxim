@@ -1,6 +1,6 @@
 import os, random
 
-def level_loading():
+def level_loading():   #загрузка уровней из тестого файлов рандомным образом
     with open(str(os.getcwd()) + '\data\levels' + '\\' +
               random.choice(os.listdir(str(os.getcwd()) + '\data\levels')), 'r', encoding='UTF-8') as file_level:
         data_level = list(map(lambda x: x.replace('\n', ''), file_level.readlines()))
