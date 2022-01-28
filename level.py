@@ -95,9 +95,9 @@ class LEVEL:
             player.speed_x = 7
 
         direction_y = player.direction.y
-        player_y = player.rect.center
+        player_y = player.rect.centery
         if player_y < TILE_SIZE and direction_y < 0:
-            self.movement[1] = 0
+            self.movement[1] = 200
             player.direction.y = 0
         elif player_y > (screen_height - TILE_SIZE * 2) and direction_y > 0:
             self.move += player.gravity
