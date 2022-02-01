@@ -4,7 +4,7 @@ import pygame
 from tiles import Tile
 from settings_level import TILE_SIZE, screen_width, screen_height
 from Player_file import Player
-from mobs import Water
+from mobs import *
 
 
 lastpos = 0
@@ -40,6 +40,12 @@ class LEVEL:
                     y = row_index * TILE_SIZE
                     water = Water((x, y), TILE_SIZE)
                     self.basic_mobs.add(water)
+                if column == 'l':
+                    x = column_index * TILE_SIZE
+                    y = row_index * TILE_SIZE
+                    tornado = Tornado((x, y), TILE_SIZE)
+                    self.basic_mobs.add(tornado)
+
 
     def cheking_horizontal_collisions(self):
         player = self.player.sprite
@@ -76,6 +82,13 @@ class LEVEL:
                     if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
                         player.direction.y = -22 #jump_height
 
+    def cheking_horizontal_collisions_tornado(self):
+        for tile in self.tiles.sprites():
+            for tornado in self.basic_mobs.sprites():
+                if isinstance(tornado, Tornado):
+                    if tile.rect.colliderect(tornado.rect):
+                        tornado.direction *= -1
+
     def checking_mobs_collisions(self):
         for mobse in self.basic_mobs.sprites():
             if mobse.rect.colliderect(self.player.sprite.rect):
@@ -90,12 +103,15 @@ class LEVEL:
         if player_x < TILE_SIZE * 4 and direction_x < 0:
             self.movement[0] = 7
             player.speed_x = 0
+            Tornado.direction = 0
         elif player_x > (screen_width - TILE_SIZE * 4) and direction_x > 0:
             self.movement[0] = -7
             player.speed_x = 0
+            Tornado.direction = 0
         else:
             self.movement[0] = 0
             player.speed_x = 7
+            Tornado.direction = random.choice((-3, 3))
 
         if player.rect.centery < TILE_SIZE * 1.5 and player.direction.y < 0:
             self.movement[1] = -player.direction.y
@@ -119,6 +135,7 @@ class LEVEL:
         self.cheking_horizontal_collisions()
         self.cheking_vertical_collisions()
         self.checking_mobs_collisions()
+        self.cheking_horizontal_collisions_tornado()
 
         #camera
         self.camera()
