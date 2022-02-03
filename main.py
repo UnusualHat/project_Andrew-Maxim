@@ -4,13 +4,11 @@ from settings_level import *
 from level import LEVEL
 
 
-
+pygame.init()
 def terminate():  # Просто выход
     pygame.quit()
     sys.exit()
 
-
-pygame.init()
 
 size = screen_width, screen_height
 screen = pygame.display.set_mode(size)

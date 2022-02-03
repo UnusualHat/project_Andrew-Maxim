@@ -80,7 +80,7 @@ class LEVEL:
 
                     keys = pygame.key.get_pressed()
                     if keys[pygame.K_UP] or keys[pygame.K_SPACE]:
-                        player.direction.y = -22 #jump_height
+                        player.direction.y = -15 #jump_height
 
     def cheking_horizontal_collisions_tornado(self):
         for tile in self.tiles.sprites():
@@ -96,11 +96,10 @@ class LEVEL:
                 sys.exit()
 
     def camera(self):#camera
-        global lastpos
         player = self.player.sprite
         player_x = player.rect.centerx
         direction_x = player.direction.x
-        if player_x < TILE_SIZE * 4 and direction_x < 0:
+        if player_x < TILE_SIZE * 4 and player_x > TILE_SIZE * 2 + 1 and direction_x < 0:
             self.movement[0] = 7
             player.speed_x = 0
             Tornado.direction = 0
@@ -123,13 +122,23 @@ class LEVEL:
             self.movement[1] = 0
 
 
+    def KEYS(self):
+        keys = pygame.key.get_pressed()
+        player = self.player.sprite
 
+        if keys[pygame.K_RIGHT]:
+            player.direction.x = 1
+        elif keys[pygame.K_LEFT]:
+            player.direction.x = -1
+        else:
+            player.direction.x = 0
 
 
     def run(self):
         self.tiles.draw(self.display_surface)
         self.basic_mobs.draw(self.display_surface)
 
+        self.KEYS()
         self.player.update()
         self.player.draw(self.display_surface)
         self.cheking_horizontal_collisions()
