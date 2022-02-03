@@ -2,9 +2,10 @@ import sys
 
 import pygame
 from tiles import Tile
-from settings_level import TILE_SIZE, screen_width, screen_height
+from settings_level import TILE_SIZE, screen_width, screen_height, MAP, level_loading
 from Player_file import Player
 from mobs import *
+from teleport import *
 
 
 lastpos = 0
@@ -21,6 +22,8 @@ class LEVEL:
     def level_map(self, map):  #функция для введения текстур и мобов в уровень
         self.tiles = pygame.sprite.Group()
         self.player = pygame.sprite.GroupSingle()
+        self.teleport = pygame.sprite.GroupSingle()
+        self.teleport.add(Teleport())
         self.basic_mobs = pygame.sprite.Group()
 
         for row_index, row in enumerate(map):
@@ -95,6 +98,13 @@ class LEVEL:
                 pygame.quit()
                 sys.exit()
 
+    def checking_level_teleport(self):
+        teleport = self.teleport.sprite
+        player = self.player.sprite
+        if teleport.rect.colliderect(player.rect):
+            self.level_map(level_loading())
+
+
     def camera(self):#camera
         player = self.player.sprite
         player_x = player.rect.centerx
@@ -146,12 +156,15 @@ class LEVEL:
         self.checking_mobs_collisions()
         self.cheking_horizontal_collisions_tornado()
 
+        self.teleport.draw(self.display_surface)
+        self.teleport.update(self.movement)
         #camera
         self.camera()
         self.tiles.update(self.movement)
         self.basic_mobs.update(self.movement)
 
-
+        #teleport
+        self.checking_level_teleport()
 
 
 
