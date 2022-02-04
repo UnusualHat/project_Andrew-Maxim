@@ -94,14 +94,14 @@ class LEVEL:
 
     def checking_mobs_collisions(self):
         for mobse in self.basic_mobs.sprites():
-            if mobse.rect.colliderect(self.player.sprite.rect):
+            if pygame.sprite.collide_rect_ratio(0.3)(mobse, self.player.sprite):
                 pygame.quit()
                 sys.exit()
 
     def checking_level_teleport(self):
         teleport = self.teleport.sprite
         player = self.player.sprite
-        if teleport.rect.colliderect(player.rect):
+        if pygame.sprite.collide_rect_ratio(0.4)(teleport, player):
             self.level_map(level_loading())
 
 
@@ -132,7 +132,7 @@ class LEVEL:
             self.movement[1] = 0
 
 
-    def KEYS(self):
+    def KEYS(self):#player
         keys = pygame.key.get_pressed()
         player = self.player.sprite
 
