@@ -11,6 +11,8 @@ def terminate():  # Просто выход
     sys.exit()
 
 
+
+
 size = screen_width, screen_height
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('Программа')

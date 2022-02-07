@@ -45,7 +45,6 @@ class Menu(pygame.sprite.Sprite):
                         break
                     if bottom_index == 1:
                         self.image_rule = True
-                        break
                     if bottom_index == 2:
                         self.exi = True
                         break
@@ -58,10 +57,12 @@ class Menu(pygame.sprite.Sprite):
         self.display_surface.blit(self.image_quit, self.rect_quit)
         self.collisions()
         if self.image_rule:
-            self.img = pygame.transform.scale(load_image('start.png'), ((screen_width), (screen_height)))
+            self.img = pygame.transform.scale(load_image('instructions.png'), ((screen_width), (screen_height)))
             self.rect_img = self.img.get_rect(
                 topleft=(0, 0))
             self.display_surface.blit(self.img, self.rect_img)
+            pygame.display.flip()
+            pygame.time.delay(18000)
         else:
             self.display_surface.blit(self.image_play, self.rect_play)
             self.display_surface.blit(self.image_rules, self.rect_rules)

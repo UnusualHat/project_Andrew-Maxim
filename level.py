@@ -101,7 +101,7 @@ class LEVEL:
     def checking_level_teleport(self):
         teleport = self.teleport.sprite
         player = self.player.sprite
-        if pygame.sprite.collide_rect_ratio(0.4)(teleport, player):
+        if pygame.sprite.collide_rect_ratio(0.5)(teleport, player):
             self.level_map(level_loading())
 
 
