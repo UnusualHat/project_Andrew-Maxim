@@ -1,12 +1,14 @@
 import pygame
 import sys
 from settings_level import *
-from level import LEVEL
+from level import LEVEL, MONEY
 from MENU import Menu
+from LOADING import load_image
 
 
 pygame.init()
-def terminate():  # Просто выход
+def terminate():#Просто выход
+
     pygame.quit()
     sys.exit()
 
@@ -16,7 +18,7 @@ def terminate():  # Просто выход
 size = screen_width, screen_height
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption('Программа')
-fps = 60
+fps = 70
 clock = pygame.time.Clock()
 
 level = LEVEL(MAP, screen)
@@ -28,6 +30,8 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 terminate()
+            if event.key == pygame.K_RIGHT:
+                MONEY += 5
     if menu_on:
         screen.fill('black')
         menu = Menu(screen, size)
