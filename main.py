@@ -1,16 +1,16 @@
 import pygame
 import sys
 from settings_level import *
-from level import LEVEL, MONEY
+from level import LEVEL
 from MENU import Menu
 from LOADING import load_image
 
 
 pygame.init()
 def terminate():#Просто выход
-
     pygame.quit()
     sys.exit()
+
 
 
 
@@ -30,8 +30,6 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 terminate()
-            if event.key == pygame.K_RIGHT:
-                MONEY += 5
     if menu_on:
         screen.fill('black')
         menu = Menu(screen, size)

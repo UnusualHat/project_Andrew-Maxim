@@ -6,6 +6,7 @@ from settings_level import TILE_SIZE, screen_width, screen_height, MAP, level_lo
 from Player_file import Player
 from mobs import *
 from teleport import *
+from GAME_OVER import GAMEOVER
 
 
 lastpos = 0
@@ -94,16 +95,23 @@ class LEVEL:
                     if tile.rect.colliderect(tornado.rect):
                         tornado.direction *= -1
 
+    def terminate(self):  # Просто выход
+        self.display_surface.fill('black')
+        game_over = GAMEOVER(self.display_surface, MONEY)
+        game_over.update()
+        pygame.display.flip()
+        pygame.time.delay(2800)
+        pygame.quit()
+        sys.exit()
+
     def checking_mobs_collisions(self):
         for mobse in self.basic_mobs.sprites():
             if isinstance(mobse, Tornado):
                 if pygame.sprite.collide_rect_ratio(0.3)(mobse, self.player.sprite):
-                    pygame.quit()
-                    sys.exit()
+                    self.terminate()
             else:
                 if pygame.sprite.collide_rect_ratio(0.56)(mobse, self.player.sprite):
-                    pygame.quit()
-                    sys.exit()
+                    self.terminate()
 
     def checking_level_teleport(self):
         global MONEY
