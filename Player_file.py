@@ -22,7 +22,10 @@ class Player(pygame.sprite.Sprite):
         self.size = size
         self.image = pygame.transform.scale(Player.standing_images['right'], (size - 5, size - 5))
         self.rect = self.image.get_rect(topleft = pos)
+
         self.direction = pygame.math.Vector2(0, 0)
+
+
         self.LEFT_KEY, self.RIGHT_KEY = False, False
         self.is_jumping, self.on_ground = False, False
         self.gravity, self.friction = 0.35, -0.1
